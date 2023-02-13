@@ -6,8 +6,14 @@ defmodule Traefik.Handler do
     |> format_response()
   end
 
-  def parse(_request) do
-    %{method: "GET", path: "/hello", response: ""}
+  def parse(request) do
+    [method, path, _protocol] =
+      request
+      |> String.split("\n")
+      |> List.first()
+      |> String.split(" ")
+
+    %{method: method, path: path, response: ""}
   end
 
   def route(_conn) do
