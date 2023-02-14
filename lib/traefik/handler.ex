@@ -5,6 +5,7 @@ defmodule Traefik.Handler do
     |> rewrite_path()
     |> log()
     |> route()
+    |> track()
     |> format_response()
   end
 
@@ -45,6 +46,13 @@ defmodule Traefik.Handler do
   def route(conn, _method, path) do
     %{conn | status: 404, response: "No #{path} found!!!"}
   end
+
+  def track(%{status: 404, path: path} = conn) do
+    IO.inspect("Warn ✊ path #{path} not found")
+    conn
+  end
+
+  def track(conn), do: conn
 
   def format_response(conn) do
     """
