@@ -14,7 +14,7 @@ defmodule Traefik.Handler do
       |> List.first()
       |> String.split(" ")
 
-    %{method: method, path: path, response: ""}
+    %{method: method, path: path, response: "", status: nil}
   end
 
   def log(conn), do: IO.inspect(conn, label: "Logger")
@@ -24,16 +24,20 @@ defmodule Traefik.Handler do
   end
 
   def route(conn, "GET", "/hello") do
-    %{conn | response: "Hello World!!!"}
+    %{conn | status: 200, response: "Hello World!!!"}
   end
 
   def route(conn, "GET", "/world") do
-    %{conn | response: "Hello MakingDevs and all devs"}
+    %{conn | status: 200, response: "Hello MakingDevs and all devs"}
+  end
+
+  def route(conn, _method, path) do
+    %{conn | status: 404, response: "No #{path} found!!!"}
   end
 
   def format_response(conn) do
     """
-    HTTP/1.1 200 OK
+    HTTP/1.1 #{conn.status} #{status_reason(conn.status)}
     Host: some.com
     User-Agent: telnet
     Content-Lenght: #{String.length(conn.response)}
@@ -41,6 +45,18 @@ defmodule Traefik.Handler do
 
     #{conn.response}
     """
+  end
+
+  defp status_reason(code) do
+    %{
+      200 => "OK",
+      201 => "Created",
+      401 => "Unauthorized",
+      403 => "Forbidden",
+      404 => "Not Found",
+      500 => "Internal Server Error"
+    }
+    |> Map.get(code)
   end
 end
 
@@ -53,6 +69,9 @@ User-Agent: telnet
 
 """
 
+IO.puts(Traefik.Handler.handle(request_1))
+IO.puts("-------------------------#")
+
 request_2 = """
 GET /world HTTP/1.1
 Accept: */*
@@ -62,6 +81,16 @@ User-Agent: telnet
 
 """
 
-IO.puts(Traefik.Handler.handle(request_1))
-IO.puts("######################")
 IO.puts(Traefik.Handler.handle(request_2))
+IO.puts("-------------------------#")
+
+request_3 = """
+GET /not-found HTTP/1.1
+Accept: */*
+Connection: keep-alive
+User-Agent: telnet
+
+
+"""
+
+IO.puts(Traefik.Handler.handle(request_3))
