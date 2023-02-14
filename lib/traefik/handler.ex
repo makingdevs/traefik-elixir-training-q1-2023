@@ -5,6 +5,9 @@ defmodule Traefik.Handler do
 
   @files_path Path.expand("../../pages", __DIR__)
 
+  import Traefik.Plugs, only: [rewrite_path: 1, log: 1, track: 1]
+  import Traefik.Parser, only: [parse: 1]
+
   @doc """
   Handle a single request, transforms into response.
   """
@@ -17,24 +20,6 @@ defmodule Traefik.Handler do
     |> track()
     |> format_response()
   end
-
-  def parse(request) do
-    [method, path, _protocol] =
-      request
-      |> String.split("\n")
-      |> List.first()
-      |> String.split(" ")
-
-    %{method: method, path: path, response: "", status: nil}
-  end
-
-  def rewrite_path(%{path: "/redirectme"} = conn) do
-    %{conn | path: "/all"}
-  end
-
-  def rewrite_path(conn), do: conn
-
-  def log(conn), do: IO.inspect(conn, label: "Logger")
 
   def route(conn) do
     route(conn, conn.method, conn.path)
@@ -81,13 +66,6 @@ defmodule Traefik.Handler do
   #       %{conn | status: 404, response: "File not found for #{inspect(reason)}"}
   #   end
   # end
-
-  def track(%{status: 404, path: path} = conn) do
-    IO.inspect("Warn ✊ path #{path} not found")
-    conn
-  end
-
-  def track(conn), do: conn
 
   def format_response(conn) do
     """
