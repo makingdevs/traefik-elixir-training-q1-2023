@@ -11,7 +11,13 @@ defmodule Traefik.Organization do
     |> Enum.map(&transform_developer/1)
   end
 
-  def get_developer(id) do
+  def get_developer(id) when is_binary(id) do
+    id
+    |> String.to_integer()
+    |> get_developer()
+  end
+
+  def get_developer(id) when is_integer(id) do
     list_developers()
     |> Enum.find(fn
       nil -> false
@@ -31,4 +37,12 @@ defmodule Traefik.Organization do
   end
 
   defp transform_developer(_), do: nil
+
+  ## More guards in anon funs
+  # iex(61)> number_type = fn
+  # ...(61)> x when x < 0 -> :negative
+  # ...(61)> x when x > 0 -> :positive
+  # ...(61)> _ -> :zero
+  # ...(61)> end
+  #
 end
