@@ -4,12 +4,11 @@ defmodule Traefik.Organization do
 
   def list_developers do
     @devs_file
-    |> File.read()
-    |> elem(1)
+    |> File.read!()
     |> String.split("\n")
     |> Kernel.tl()
-    |> Enum.map(fn e -> String.split(e, ",") end)
-    |> Enum.map(fn e -> transform_developer(e) end)
+    |> Enum.map(&String.split(&1, ","))
+    |> Enum.map(&transform_developer/1)
   end
 
   defp transform_developer([id, first_name, last_name, email, gender, ip_address]) do
