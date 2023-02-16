@@ -22,23 +22,19 @@ defmodule Traefik.Handler do
     |> format_response()
   end
 
-  def route(%Conn{} = conn) do
-    route(conn, conn.method, conn.path)
-  end
-
-  def route(%Conn{} = conn, "GET", "/hello") do
+  def route(%Conn{method: "GET", path: "/hello"} = conn) do
     %{conn | status: 200, response: "Hello World!!!"}
   end
 
-  def route(%Conn{} = conn, "GET", "/world") do
+  def route(%Conn{method: "GET", path: "/world"} = conn) do
     %{conn | status: 200, response: "Hello MakingDevs and all devs"}
   end
 
-  def route(%Conn{} = conn, "GET", "/all") do
+  def route(%Conn{method: "GET", path: "/all"} = conn) do
     %{conn | status: 200, response: "All developers greetings!!!"}
   end
 
-  def route(%Conn{params: params} = conn, "POST", "/new") do
+  def route(%Conn{method: "POST", path: "/new", params: params} = conn) do
     %{
       conn
       | status: 201,
@@ -46,14 +42,14 @@ defmodule Traefik.Handler do
     }
   end
 
-  def route(%Conn{} = conn, "GET", "/about") do
+  def route(%Conn{method: "GET", path: "/about"} = conn) do
     @files_path
     |> Path.join("about.html")
     |> File.read()
     |> handle_file(conn)
   end
 
-  def route(%Conn{} = conn, _method, path) do
+  def route(%Conn{method: _method, path: path} = conn) do
     %{conn | status: 404, response: "No #{path} found!!!"}
   end
 
