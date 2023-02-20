@@ -2,13 +2,19 @@ defmodule Traefik.Organization do
   alias Traefik.Developer
   @devs_file Path.expand("./") |> Path.join("MOCK_DATA.csv")
 
-  def list_developers do
+  @limit 100
+  @offset 0
+
+  def list_developers(params \\ %{}) do
     @devs_file
     |> File.read!()
     |> String.split("\n")
     |> Kernel.tl()
     |> Enum.map(&String.split(&1, ","))
     |> Enum.map(&transform_developer/1)
+    |> Enum.drop(Map.get(params, :offset, @offset))
+    |> Enum.take(Map.get(params, :limit, @limit))
+    |> Enum.filter(&(&1 != nil))
   end
 
   def get_developer(id) when is_binary(id) do
