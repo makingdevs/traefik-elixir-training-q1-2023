@@ -4,8 +4,7 @@ defmodule Traefik.DeveloperController do
 
   def index(%Conn{} = conn) do
     developers =
-      Organization.list_developers()
-      |> Enum.take(5)
+      Organization.list_developers(%{limit: 5, offset: 0})
       |> Enum.map(&"<li>#{&1.id} - #{&1.first_name}</li> ")
       |> Enum.join("\n")
 
