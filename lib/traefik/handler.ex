@@ -8,6 +8,7 @@ defmodule Traefik.Handler do
   import Traefik.Plugs, only: [rewrite_path: 1, log: 1, track: 1]
   import Traefik.Parser, only: [parse: 1]
   alias Traefik.Conn
+  alias Traefik.DeveloperController
 
   @doc """
   Handle a single request, transforms into response.
@@ -30,8 +31,12 @@ defmodule Traefik.Handler do
     %{conn | status: 200, response: "Hello MakingDevs and all devs"}
   end
 
-  def route(%Conn{method: "GET", path: "/all"} = conn) do
-    %{conn | status: 200, response: "All developers greetings!!!"}
+  def route(%Conn{method: "GET", path: "/developer/" <> id} = conn) do
+    DeveloperController.show(conn, %{"id" => id})
+  end
+
+  def route(%Conn{method: "GET", path: "/developer"} = conn) do
+    DeveloperController.index(conn)
   end
 
   def route(%Conn{method: "POST", path: "/new", params: params} = conn) do
@@ -156,3 +161,28 @@ name=Juan&company=MakingDevs
 """
 
 IO.puts(Traefik.Handler.handle(request_6))
+IO.puts("-------------------------#")
+
+request_7 = """
+GET /developer HTTP/1.1
+Accept: */*
+Connection: keep-alive
+Content-Type: application/x-www-form-urlencoded
+User-Agent: telnet
+
+"""
+
+IO.puts(Traefik.Handler.handle(request_7))
+
+IO.puts("-------------------------#")
+
+request_8 = """
+GET /developer/17 HTTP/1.1
+Accept: */*
+Connection: keep-alive
+Content-Type: application/x-www-form-urlencoded
+User-Agent: telnet
+
+"""
+
+IO.puts(Traefik.Handler.handle(request_8))
