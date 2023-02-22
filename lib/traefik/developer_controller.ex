@@ -16,7 +16,7 @@ defmodule Traefik.DeveloperController do
     render(conn, "show.eex", developer: developer)
   end
 
-  defp render(conn, template, bindings \\ []) do
+  defp render(conn, template, bindings) do
     response =
       @templates_location
       |> Path.join(template)
