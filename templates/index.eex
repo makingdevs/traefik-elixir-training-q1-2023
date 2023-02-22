@@ -1,5 +1,5 @@
 <ul>
-  <%= for dev <- developers do %>
-    <li><%= dev.id %> - <%= dev.first_name %> <%= dev.last_name %></li>
-  <% end %>
+<%= for dev <- developers do %>
+<li><%= dev.id %> - <%= dev.first_name %> <%= dev.last_name %></li>
+<% end %>
 </ul>
