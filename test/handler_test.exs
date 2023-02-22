@@ -19,6 +19,7 @@ defmodule Traefik.HandlerTest do
            HTTP/1.1 200 OK
            Host: some.com
            User-Agent: telnet
+           Content-Type: text/html
            Content-Lenght: 14
            Accept: */*
 
@@ -42,6 +43,7 @@ defmodule Traefik.HandlerTest do
            HTTP/1.1 200 OK
            Host: some.com
            User-Agent: telnet
+           Content-Type: text/html
            Content-Lenght: 29
            Accept: */*
 
@@ -65,6 +67,7 @@ defmodule Traefik.HandlerTest do
            HTTP/1.1 404 Not Found
            Host: some.com
            User-Agent: telnet
+           Content-Type: text/html
            Content-Lenght: 22
            Accept: */*
 
@@ -88,6 +91,7 @@ defmodule Traefik.HandlerTest do
            HTTP/1.1 404 Not Found
            Host: some.com
            User-Agent: telnet
+           Content-Type: text/html
            Content-Lenght: 16
            Accept: */*
 
@@ -111,6 +115,7 @@ defmodule Traefik.HandlerTest do
            HTTP/1.1 200 OK
            Host: some.com
            User-Agent: telnet
+           Content-Type: text/html
            Content-Lenght: 139
            Accept: */*
 
@@ -144,6 +149,7 @@ defmodule Traefik.HandlerTest do
            HTTP/1.1 201 Created
            Host: some.com
            User-Agent: telnet
+           Content-Type: text/html
            Content-Lenght: 44
            Accept: */*
 
@@ -168,6 +174,7 @@ defmodule Traefik.HandlerTest do
            HTTP/1.1 200 OK
            Host: some.com
            User-Agent: telnet
+           Content-Type: text/html
            Content-Lenght: 159
            Accept: */*
 
@@ -204,6 +211,7 @@ defmodule Traefik.HandlerTest do
            HTTP/1.1 200 OK
            Host: some.com
            User-Agent: telnet
+           Content-Type: text/html
            Content-Lenght: 53
            Accept: */*
 
