@@ -21,7 +21,6 @@ defmodule Traefik.Parser do
       params: params,
       headers: headers
     }
-    |> IO.inspect()
   end
 
   @doc """
