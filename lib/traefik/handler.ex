@@ -64,19 +64,6 @@ defmodule Traefik.Handler do
   def handle_file({:error, reason}, %Conn{} = conn),
     do: %{conn | status: 404, response: "File not found for #{inspect(reason)}"}
 
-  # def route(conn, "GET", "/about") do
-  #   Path.expand("../../pages", __DIR__)
-  #   |> Path.join("about.html")
-  #   |> File.read()
-  #   |> case do
-  #     {:ok, content} ->
-  #       %{conn | status: 200, response: content}
-
-  #     {:error, reason} ->
-  #       %{conn | status: 404, response: "File not found for #{inspect(reason)}"}
-  #   end
-  # end
-
   def format_response(%Conn{} = conn) do
     """
     HTTP/1.1 #{Conn.status(conn)}
