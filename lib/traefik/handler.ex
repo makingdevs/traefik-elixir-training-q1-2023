@@ -39,6 +39,10 @@ defmodule Traefik.Handler do
     DeveloperController.index(conn)
   end
 
+  def route(%Conn{method: "GET", path: "/api/developer"} = conn) do
+    Traefik.Api.DeveloperController.index(conn)
+  end
+
   def route(%Conn{method: "POST", path: "/new", params: params} = conn) do
     %{
       conn
