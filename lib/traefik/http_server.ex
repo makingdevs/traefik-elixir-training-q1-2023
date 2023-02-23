@@ -19,14 +19,14 @@ defmodule Traefik.HttpServer do
   def serve(client_socket) do
     client_socket
     |> read()
-    |> handles()
+    |> Traefik.Handler.handle()
     |> write_response(client_socket)
   end
 
   def read(client_socket) do
     {:ok, request} = :gen_tcp.recv(client_socket, 0)
     IO.puts("⬅️  Receive the request")
-    IO.inspect(request, label: "Request")
+    IO.inspect(request, label: "📧 Request")
     request
   end
 
