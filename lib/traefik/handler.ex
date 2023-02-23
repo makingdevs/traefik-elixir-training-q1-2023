@@ -23,6 +23,15 @@ defmodule Traefik.Handler do
     |> format_response()
   end
 
+  def route(%Conn{method: "GET", path: "/crash"} = _conn) do
+    raise "Crash server!!!"
+  end
+
+  def route(%Conn{method: "GET", path: "/freeze/" <> freeze} = conn) do
+    freeze |> String.to_integer() |> :timer.sleep()
+    %{conn | status: 200, response: "unfreeze !!!!"}
+  end
+
   def route(%Conn{method: "GET", path: "/hello"} = conn) do
     %{conn | status: 200, response: "Hello World!!!"}
   end
