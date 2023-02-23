@@ -5,9 +5,9 @@ defmodule Traefik.Parser do
   Parses a request and transforms into a Traefik.Conn struct.
   """
   def parse(request) do
-    [main, params_string] = String.split(request, "\n\n")
+    [main, params_string] = String.split(request, "\r\n\r\n")
 
-    [request_line | headers_string] = String.split(main, "\n")
+    [request_line | headers_string] = String.split(main, "\r\n")
 
     [method, path, _protocol] = String.split(request_line, " ")
 

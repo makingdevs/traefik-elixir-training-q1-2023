@@ -5,12 +5,12 @@ defmodule Traefik.HandlerTest do
 
   test "GET /hello" do
     request = """
-    GET /hello HTTP/1.1
-    Accept: */*
-    Connection: keep-alive
-    User-Agent: telnet
-
-
+    GET /hello HTTP/1.1\r
+    Accept: */*\r
+    Connection: keep-alive\r
+    User-Agent: telnet\r
+    \r
+    \r
     """
 
     response = Handler.handle(request)
@@ -29,12 +29,12 @@ defmodule Traefik.HandlerTest do
 
   test "GET /world" do
     request = """
-    GET /world HTTP/1.1
-    Accept: */*
-    Connection: keep-alive
-    User-Agent: telnet
-
-
+    GET /world HTTP/1.1\r
+    Accept: */*\r
+    Connection: keep-alive\r
+    User-Agent: telnet\r
+    \r
+    \r
     """
 
     response = Handler.handle(request)
@@ -53,12 +53,12 @@ defmodule Traefik.HandlerTest do
 
   test "GET /not-found" do
     request = """
-    GET /not-found HTTP/1.1
-    Accept: */*
-    Connection: keep-alive
-    User-Agent: telnet
-
-
+    GET /not-found HTTP/1.1\r
+    Accept: */*\r
+    Connection: keep-alive\r
+    User-Agent: telnet\r
+    \r
+    \r
     """
 
     response = Handler.handle(request)
@@ -77,12 +77,12 @@ defmodule Traefik.HandlerTest do
 
   test "GET /redirectme" do
     request = """
-    GET /redirectme HTTP/1.1
-    Accept: */*
-    Connection: keep-alive
-    User-Agent: telnet
-
-
+    GET /redirectme HTTP/1.1\r
+    Accept: */*\r
+    Connection: keep-alive\r
+    User-Agent: telnet\r
+    \r
+    \r
     """
 
     response = Handler.handle(request)
@@ -101,12 +101,12 @@ defmodule Traefik.HandlerTest do
 
   test "GET /about" do
     request = """
-    GET /about HTTP/1.1
-    Accept: */*
-    Connection: keep-alive
-    User-Agent: telnet
-
-
+    GET /about HTTP/1.1\r
+    Accept: */*\r
+    Connection: keep-alive\r
+    User-Agent: telnet\r
+    \r
+    \r
     """
 
     response = Handler.handle(request)
@@ -134,12 +134,12 @@ defmodule Traefik.HandlerTest do
 
   test "POST /new" do
     request = """
-    POST /new HTTP/1.1
-    Accept: */*
-    Connection: keep-alive
-    Content-Type: application/x-www-form-urlencoded
-    User-Agent: telnet
-
+    POST /new HTTP/1.1\r
+    Accept: */*\r
+    Connection: keep-alive\r
+    Content-Type: application/x-www-form-urlencoded\r
+    User-Agent: telnet\r
+    \r
     name=Juan&company=MakingDevs
     """
 
@@ -160,12 +160,12 @@ defmodule Traefik.HandlerTest do
 
   test "GET /developer" do
     request = """
-    GET /developer HTTP/1.1
-    Accept: */*
-    Connection: keep-alive
-    Content-Type: application/x-www-form-urlencoded
-    User-Agent: telnet
-
+    GET /developer HTTP/1.1\r
+    Accept: */*\r
+    Connection: keep-alive\r
+    Content-Type: application/x-www-form-urlencoded\r
+    User-Agent: telnet\r
+    \r
     """
 
     response = Handler.handle(request)
@@ -197,12 +197,12 @@ defmodule Traefik.HandlerTest do
 
   test "GET /developer/18" do
     request = """
-    GET /developer/17 HTTP/1.1
-    Accept: */*
-    Connection: keep-alive
-    Content-Type: application/x-www-form-urlencoded
-    User-Agent: telnet
-
+    GET /developer/17 HTTP/1.1\r
+    Accept: */*\r
+    Connection: keep-alive\r
+    Content-Type: application/x-www-form-urlencoded\r
+    User-Agent: telnet\r
+    \r
     """
 
     response = Handler.handle(request)
@@ -222,11 +222,11 @@ defmodule Traefik.HandlerTest do
 
   test "GET /api/developer" do
     request = """
-    GET /api/developer HTTP/1.1
-    Accept: */*
-    Connection: keep-alive
-    User-Agent: telnet
-
+    GET /api/developer HTTP/1.1\r
+    Accept: */*\r
+    Connection: keep-alive\r
+    User-Agent: telnet\r
+    \r
     """
 
     response = Handler.handle(request)
