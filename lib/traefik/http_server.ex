@@ -18,6 +18,8 @@ defmodule Traefik.HttpServer do
   end
 
   def serve(client_socket) do
+    IO.inspect(self(), label: "❤️  PID")
+
     client_socket
     |> read()
     |> Traefik.Handler.handle()
