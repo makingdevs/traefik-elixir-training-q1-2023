@@ -10,7 +10,7 @@ defmodule Traefik.FibonacciServer do
 
   def loop do
     receive do
-      n -> Fibonacci.sequence(n)
+      {caller, n} when is_pid(caller) -> send(caller, {:ok, Fibonacci.sequence(n)})
     end
   end
 end
