@@ -9,13 +9,13 @@ defmodule Traefik.FibonacciServer do
     GenericServer.start(__MODULE__, self(), %{})
   end
 
-  def handle_message(:status, parent, state) do
+  def handle_cast(:status, parent, state) do
     IO.inspect(parent)
     IO.inspect(self())
     {:ok, state, state}
   end
 
-  def handle_message({:compute, n}, _parent, state) do
+  def handle_cast({:compute, n}, _parent, state) do
     result =
       case Map.get(state, n) do
         nil -> Fibonacci.sequence(n)

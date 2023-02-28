@@ -6,7 +6,8 @@ defmodule Traefik.GenericServer do
   @doc """
   ASYNC calls for the server
   """
-  def cast(_pid_server, _message) do
+  def cast(pid_server, message) do
+    send(pid_server, {:cast, message})
   end
 
   @doc """
@@ -20,8 +21,8 @@ defmodule Traefik.GenericServer do
       :kill ->
         :killed
 
-      message ->
-        {:ok, result, new_state} = module.handle_message(message, parent, state)
+      {:cast, message} ->
+        {:ok, result, new_state} = module.handle_cast(message, parent, state)
         send(parent, {:ok, {module, message, result, new_state}})
         loop(module, parent, new_state)
     end
