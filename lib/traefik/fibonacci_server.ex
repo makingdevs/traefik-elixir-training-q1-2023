@@ -14,6 +14,9 @@ defmodule Traefik.FibonacciServer do
         send(caller, {:ok, Fibonacci.sequence(n)})
         loop()
 
+      :kill ->
+        :killed
+
       _ ->
         loop()
     end
