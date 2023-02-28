@@ -15,10 +15,17 @@ defmodule Traefik.FibonacciServer do
         loop(state)
 
       {caller, n} when is_pid(caller) and is_number(n) ->
-        result = Fibonacci.sequence(n)
+        result =
+          case Map.get(state, n) do
+            nil -> Fibonacci.sequence(n)
+            r -> r
+          end
+
         send(caller, {:ok, n, result})
-        state = Map.put(state, n, result)
-        loop(state)
+
+        state
+        |> Map.put_new(n, result)
+        |> loop()
 
       :kill ->
         :killed
