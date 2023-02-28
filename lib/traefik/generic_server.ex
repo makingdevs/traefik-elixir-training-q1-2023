@@ -5,8 +5,9 @@ defmodule Traefik.GenericServer do
 
   def loop(module, state) do
     receive do
-      {message, pid} ->
-        send(pid, {:ok, {module, message, state}})
+      {pid, message} ->
+        {:ok, result, state} = module.handle_message(message, state)
+        send(pid, {:ok, {module, message, result, state}})
         loop(module, state)
 
       :kill ->
