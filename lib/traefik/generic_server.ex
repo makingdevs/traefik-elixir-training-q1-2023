@@ -1,20 +1,29 @@
 defmodule Traefik.GenericServer do
-  def start(module) do
-    spawn(__MODULE__, :loop, [module, %{}])
+  def start(module, parent \\ self(), init \\ []) do
+    spawn(__MODULE__, :loop, [module, parent, init])
   end
 
-  def loop(module, state) do
-    receive do
-      {pid, message} ->
-        {:ok, result, new_state} = module.handle_message(message, state)
-        send(pid, {:ok, {module, message, result, new_state}})
-        loop(module, new_state)
+  @doc """
+  ASYNC calls for the server
+  """
+  def cast(_pid_server, _message) do
+  end
 
+  @doc """
+  SYNC calls for the server
+  """
+  def call(_pid_server, _message) do
+  end
+
+  def loop(module, parent, state) do
+    receive do
       :kill ->
         :killed
 
-      _ ->
-        loop(module, state)
+      message ->
+        {:ok, result, new_state} = module.handle_message(message, parent, state)
+        send(parent, {:ok, {module, message, result, new_state}})
+        loop(module, parent, new_state)
     end
   end
 end
