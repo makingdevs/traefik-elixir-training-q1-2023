@@ -27,13 +27,18 @@ defmodule Traefik.GenericServer do
         :killed
 
       {:cast, message} ->
-        {:ok, result, new_state} = module.handle_cast(message, parent, state)
-        send(parent, {:ok, {module, message, result, new_state}})
+        {:noreply, new_state} = module.handle_cast(message, parent, state)
+        send(parent, {:noreply, {module, message, new_state}})
         loop(module, parent, new_state)
 
       {:call, responds_to, message} ->
-        {:ok, result, new_state} = module.handle_call(message, state)
-        send(responds_to, {:ok, {module, message, result, new_state}})
+        {:reply, result, new_state} = module.handle_call(message, state)
+        send(responds_to, {:reply, result})
+        loop(module, parent, new_state)
+
+      message ->
+        {:noreply, new_state} = module.handle_info(message, parent, state)
+        send(parent, {:noreply, {module, message, new_state}})
         loop(module, parent, new_state)
     end
   end

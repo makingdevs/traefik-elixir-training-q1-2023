@@ -12,7 +12,7 @@ defmodule Traefik.FibonacciServer do
   def handle_cast(:status, parent, state) do
     IO.inspect(parent)
     IO.inspect(self())
-    {:ok, state, state}
+    {:noreply, state}
   end
 
   def handle_cast({:compute, n}, _parent, state) do
@@ -23,7 +23,7 @@ defmodule Traefik.FibonacciServer do
       end
 
     new_state = Map.put_new(state, n, result)
-    {:ok, result, new_state}
+    {:noreply, new_state}
   end
 
   def handle_call({:compute, n}, state) do
@@ -34,6 +34,11 @@ defmodule Traefik.FibonacciServer do
       end
 
     new_state = Map.put_new(state, n, result)
-    {:ok, result, new_state}
+    {:reply, result, new_state}
+  end
+
+  def handle_info(message, parent, state) do
+    IO.inspect(binding())
+    {:noreply, state}
   end
 end
