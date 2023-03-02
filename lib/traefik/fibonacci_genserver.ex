@@ -3,8 +3,12 @@ defmodule Traefik.FibonacciGenServer do
 
   alias Traefik.Fibonacci
 
+  def compute(n) do
+    GenServer.call(__MODULE__, {:compute, n})
+  end
+
   def start_link(_) do
-    GenServer.start_link(__MODULE__, %{})
+    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
 
   def init(args), do: {:ok, args}
