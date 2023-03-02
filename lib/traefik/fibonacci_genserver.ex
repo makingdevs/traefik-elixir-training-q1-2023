@@ -3,7 +3,11 @@ defmodule Traefik.FibonacciGenServer do
 
   alias Traefik.Fibonacci
 
-  def init(_), do: {:ok, %{}}
+  def start_link(_) do
+    GenServer.start_link(__MODULE__, %{})
+  end
+
+  def init(args), do: {:ok, args}
 
   def handle_call({:compute, n}, _parent, state) when is_number(n) and n > 0 do
     result =

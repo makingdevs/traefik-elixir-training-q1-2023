@@ -3,9 +3,13 @@ defmodule Traefik.ClockServer do
 
   @interval 3000
 
-  def init(_) do
-    Process.send_after(self(), :tick, @interval)
-    {:ok, %{interval: @interval, turn_on: true}}
+  def start_link(_) do
+    GenServer.start_link(__MODULE__, @interval)
+  end
+
+  def init(interval) do
+    Process.send_after(self(), :tick, interval)
+    {:ok, %{interval: interval, turn_on: true}}
   end
 
   def handle_cast({:switch}, state) do
