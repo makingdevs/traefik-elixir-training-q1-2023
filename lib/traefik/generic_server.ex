@@ -1,6 +1,7 @@
 defmodule Traefik.GenericServer do
   def start(module, parent \\ self(), init \\ []) do
-    spawn(__MODULE__, :loop, [module, parent, init])
+    # spawn_link(__MODULE__, :loop, [module, parent, init])
+    spawn_monitor(__MODULE__, :loop, [module, parent, init])
   end
 
   @doc """

@@ -15,7 +15,7 @@ defmodule Traefik.FibonacciServer do
     {:noreply, state}
   end
 
-  def handle_cast({:compute, n}, _parent, state) do
+  def handle_cast({:compute, n}, _parent, state) when is_number(n) and n > 0 do
     result =
       case Map.get(state, n) do
         nil -> Fibonacci.sequence(n)
@@ -26,7 +26,7 @@ defmodule Traefik.FibonacciServer do
     {:noreply, new_state}
   end
 
-  def handle_call({:compute, n}, state) do
+  def handle_call({:compute, n}, state) when is_number(n) and n > 0 do
     result =
       case Map.get(state, n) do
         nil -> Fibonacci.sequence(n)
