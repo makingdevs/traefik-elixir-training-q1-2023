@@ -18,7 +18,7 @@ defmodule Traefik.PoolQueue do
     GenServer.cast(__MODULE__, {:in, pid})
   end
 
-  def init([{mod, fun, args}, n_workers]) do
+  def init([{mod, fun, args} = worker, n_workers]) do
     Process.flag(:trap_exit, true)
 
     queue =
@@ -30,6 +30,7 @@ defmodule Traefik.PoolQueue do
         %{ref: ref, pid: pid}
       end)
 
+    # {:ok, %{queue: queue, worker: worker}}
     {:ok, queue}
   end
 
@@ -43,8 +44,26 @@ defmodule Traefik.PoolQueue do
     {:noreply, queue ++ [%{ref: ref, pid: pid}]}
   end
 
-  def handle_info(msg, state) do
-    IO.inspect(binding())
-    {:noreply, state}
+  def handle_info({:DOWN, _ref, :process, pid, :killed}, queue) do
+    IO.inspect("DOWN for #{pid}")
+
+    queue
+    |> Enum.find(fn %{pid: n_pid} -> n_pid == pid end)
+    |> case do
+      nil ->
+        {:noreply, queue}
+
+      %{pid: _pid, ref: _ref} = _elem ->
+        # {:ok, pid} = :erlang.apply(mod, fun, [args])
+        # ref = :erlang.monitor(:process, pid)
+
+        # queue = queue -- ([elem] ++ [%{pid: pid, ref: ref}])
+        # {:noreply, new_queue}
+        {:noreply, queue}
+    end
+  end
+
+  def handle_info({:EXIT, _pid, :killed}, queue) do
+    {:noreply, queue}
   end
 end

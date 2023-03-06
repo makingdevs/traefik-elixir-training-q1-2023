@@ -21,7 +21,7 @@ defmodule Traefik.Supervisor do
         {Traefik.PoolQueue,
          [
            worker: {Traefik.FibonacciGenServer, :start_link, []},
-           n_workers: 10,
+           n_workers: 3,
            name: PoolFibonacci_2
          ]},
         id: :pool_queue_2
