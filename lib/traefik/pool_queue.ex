@@ -5,6 +5,11 @@ defmodule Traefik.PoolQueue do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
+  def exec_compute(n) do
+    {:ok, pid} = GenServer.call(__MODULE__, :get_pid)
+    GenServer.call(pid, {:compute, n})
+  end
+
   def get, do: GenServer.call(__MODULE__, :get)
   def get_pid, do: GenServer.call(__MODULE__, :get_pid)
   def add_pid(pid), do: GenServer.cast(__MODULE__, {:in, pid})
