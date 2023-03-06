@@ -8,12 +8,14 @@ defmodule Traefik.FibonacciGenServer do
   end
 
   def start_link(_) do
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+    GenServer.start_link(__MODULE__, %{})
   end
 
   def init(args), do: {:ok, args}
 
   def handle_call({:compute, n}, _parent, state) when is_number(n) and n > 0 do
+    IO.inspect("Fibonacci compute at #{inspect(self())}...")
+
     result =
       case Map.get(state, n) do
         nil -> Fibonacci.sequence(n)

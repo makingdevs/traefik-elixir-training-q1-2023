@@ -7,7 +7,6 @@ defmodule Traefik.Supervisor do
 
   def init(_) do
     children = [
-      Traefik.FibonacciGenServer,
       Traefik.PoolQueue,
       Traefik.ClockServer
     ]
