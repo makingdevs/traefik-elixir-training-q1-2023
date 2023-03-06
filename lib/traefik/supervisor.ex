@@ -7,10 +7,27 @@ defmodule Traefik.Supervisor do
 
   def init(_) do
     children = [
-      Traefik.PoolQueue,
-      Traefik.ClockServer
+      Traefik.ClockServer,
+      Supervisor.child_spec(
+        {Traefik.PoolQueue,
+         [
+           worker: {Traefik.FibonacciGenServer, :start_link, []},
+           n_workers: 5,
+           name: PoolFibonacci_1
+         ]},
+        id: :pool_queue_1
+      ),
+      Supervisor.child_spec(
+        {Traefik.PoolQueue,
+         [
+           worker: {Traefik.FibonacciGenServer, :start_link, []},
+           n_workers: 10,
+           name: PoolFibonacci_2
+         ]},
+        id: :pool_queue_2
+      )
     ]
 
-    Supervisor.init(children, strategy: :one_for_all)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 end
