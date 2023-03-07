@@ -1,6 +1,8 @@
 defmodule Traefik.NodeQueue do
   use GenServer
 
+  alias Traefik.{PoolQueue, FibonacciGenServer}
+
   def start_link(name: name) do
     GenServer.start_link(__MODULE__, [], name: name)
   end
@@ -11,6 +13,10 @@ defmodule Traefik.NodeQueue do
   end
 
   def handle_info({:nodeup, node}, %{nodes: nodes}) do
+    :abcast = :c.nl(FibonacciGenServer)
+
+    PoolQueue.add_remote_pid(PoolFibonacci, node, 5)
+
     {:noreply, %{nodes: nodes ++ [node]}}
     |> IO.inspect(label: "Add node")
   end
