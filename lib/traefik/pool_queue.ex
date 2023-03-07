@@ -18,6 +18,14 @@ defmodule Traefik.PoolQueue do
     GenServer.cast(__MODULE__, {:in, pid})
   end
 
+  def add_remote_pid(name, node, n_workers) do
+    1..n_workers
+    |> Enum.to_list()
+    |> Enum.each(fn _ ->
+      GenServer.cast(name, {:add_remote, node})
+    end)
+  end
+
   def init([{mod, fun, args} = worker, n_workers]) do
     Process.flag(:trap_exit, true)
 
@@ -44,6 +52,14 @@ defmodule Traefik.PoolQueue do
     {:noreply, %{queue: queue ++ [%{ref: ref, pid: pid}], worker: worker}}
   end
 
+  def handle_cast({:add_remote, node}, %{queue: queue, worker: {mod, fun, args} = worker}) do
+    {:ok, pid} = :rpc.call(node, mod, fun, [args])
+    IO.inspect(pid, label: "remote")
+    ref = :erlang.monitor(:process, pid)
+
+    {:noreply, %{queue: queue ++ [%{ref: ref, pid: pid}], worker: worker}}
+  end
+
   def handle_info({:DOWN, _ref, :process, pid, reason}, %{queue: queue, worker: {mod, fun, args}}) do
     IO.inspect("DOWN for #{inspect(pid)} because #{inspect(reason)}")
 
@@ -51,7 +67,7 @@ defmodule Traefik.PoolQueue do
     |> Enum.find(fn %{pid: n_pid} -> n_pid == pid end)
     |> case do
       nil ->
-        {:noreply, queue}
+        {:noreply, %{queue: queue, worker: {mod, fun, args}}}
 
       %{pid: _pid, ref: _ref} = elem ->
         {:ok, new_pid} = apply(mod, fun, [args])
