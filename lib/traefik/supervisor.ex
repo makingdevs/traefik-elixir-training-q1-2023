@@ -14,18 +14,9 @@ defmodule Traefik.Supervisor do
          [
            worker: {Traefik.FibonacciGenServer, :start_link, []},
            n_workers: 5,
-           name: PoolFibonacci_1
+           name: PoolFibonacci
          ]},
-        id: :pool_queue_1
-      ),
-      Supervisor.child_spec(
-        {Traefik.PoolQueue,
-         [
-           worker: {Traefik.FibonacciGenServer, :start_link, []},
-           n_workers: 3,
-           name: PoolFibonacci_2
-         ]},
-        id: :pool_queue_2
+        id: :pool_queue
       )
     ]
 
