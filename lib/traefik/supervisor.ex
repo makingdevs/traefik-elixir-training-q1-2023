@@ -8,6 +8,7 @@ defmodule Traefik.Supervisor do
   def init(_) do
     children = [
       Traefik.ClockServer,
+      {Traefik.NodeQueue, [name: NodeQueue]},
       Supervisor.child_spec(
         {Traefik.PoolQueue,
          [
