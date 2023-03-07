@@ -10,8 +10,8 @@ defmodule Traefik.PoolQueue do
     GenServer.call(pid, {:compute, n})
   end
 
-  def get(name), do: GenServer.call(name, __MODULE__, :get)
-  def get_pid(name), do: GenServer.call(name, __MODULE__, :get_pid)
+  def get(name), do: GenServer.call(name, :get)
+  def get_pid(name), do: GenServer.call(name, :get_pid)
 
   def add_pid(worker_module) do
     {:ok, pid} = :erlang.apply(worker_module, :start_link, [[]])
@@ -25,27 +25,27 @@ defmodule Traefik.PoolQueue do
       1..n_workers
       |> Enum.to_list()
       |> Enum.map(fn _ ->
-        {:ok, pid} = :erlang.apply(mod, fun, [args])
+        {:ok, pid} = apply(mod, fun, [args])
         ref = :erlang.monitor(:process, pid)
         %{ref: ref, pid: pid}
       end)
 
-    # {:ok, %{queue: queue, worker: worker}}
-    {:ok, queue}
+    {:ok, %{queue: queue, worker: worker}}
   end
 
-  def handle_call(:get, _from, queue), do: {:reply, {:ok, queue}, queue}
+  def handle_call(:get, _from, %{queue: queue, worker: _worker} = state),
+    do: {:reply, {:ok, queue}, state}
 
-  def handle_call(:get_pid, _from, [%{pid: pid} = pid_ref | queue]),
-    do: {:reply, {:ok, pid}, queue ++ [pid_ref]}
+  def handle_call(:get_pid, _from, %{queue: [%{pid: pid} = pid_ref | queue], worker: worker}),
+    do: {:reply, {:ok, pid}, %{queue: queue ++ [pid_ref], worker: worker}}
 
-  def handle_cast({:in, pid}, queue) do
+  def handle_cast({:in, pid}, %{queue: queue, worker: worker}) do
     ref = :erlang.monitor(:process, pid)
-    {:noreply, queue ++ [%{ref: ref, pid: pid}]}
+    {:noreply, %{queue: queue ++ [%{ref: ref, pid: pid}], worker: worker}}
   end
 
-  def handle_info({:DOWN, _ref, :process, pid, :killed}, queue) do
-    IO.inspect("DOWN for #{pid}")
+  def handle_info({:DOWN, _ref, :process, pid, reason}, %{queue: queue, worker: {mod, fun, args}}) do
+    IO.inspect("DOWN for #{inspect(pid)} because #{inspect(reason)}")
 
     queue
     |> Enum.find(fn %{pid: n_pid} -> n_pid == pid end)
@@ -53,13 +53,17 @@ defmodule Traefik.PoolQueue do
       nil ->
         {:noreply, queue}
 
-      %{pid: _pid, ref: _ref} = _elem ->
-        # {:ok, pid} = :erlang.apply(mod, fun, [args])
-        # ref = :erlang.monitor(:process, pid)
+      %{pid: _pid, ref: _ref} = elem ->
+        {:ok, new_pid} = apply(mod, fun, [args])
+        IO.inspect("Replace #{inspect(pid)} for #{inspect(new_pid)}")
+        new_ref = :erlang.monitor(:process, pid)
 
-        # queue = queue -- ([elem] ++ [%{pid: pid, ref: ref}])
-        # {:noreply, new_queue}
-        {:noreply, queue}
+        queue =
+          queue
+          |> Kernel.--([elem])
+          |> Kernel.++([%{pid: new_pid, ref: new_ref}])
+
+        {:noreply, %{queue: queue, worker: {mod, fun, args}}}
     end
   end
 
