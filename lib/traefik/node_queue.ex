@@ -14,8 +14,9 @@ defmodule Traefik.NodeQueue do
 
   def handle_info({:nodeup, node}, %{nodes: nodes}) do
     :abcast = :c.nl(FibonacciGenServer)
+    :abcast = :c.nl(Traefik.Fibonacci)
 
-    PoolQueue.add_remote_pid(PoolFibonacci, node, 5)
+    PoolQueue.add_remote_pid(PoolFibonacci, node, 3)
 
     {:noreply, %{nodes: nodes ++ [node]}}
     |> IO.inspect(label: "Add node")

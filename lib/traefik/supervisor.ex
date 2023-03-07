@@ -13,7 +13,7 @@ defmodule Traefik.Supervisor do
         {Traefik.PoolQueue,
          [
            worker: {Traefik.FibonacciGenServer, :start_link, []},
-           n_workers: 5,
+           n_workers: 3,
            name: PoolFibonacci
          ]},
         id: :pool_queue
